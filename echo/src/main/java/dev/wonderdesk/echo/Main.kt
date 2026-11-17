@@ -133,8 +133,13 @@ private fun ProjectList(list: List<Project>?, onOpen: (Project) -> Unit, onImpor
     rename?.let { pr -> InputDialog("Rename", "Name", initial = pr.name, confirm = "Rename", onDismiss = { rename = null }) { n -> pr.name = n; pr.save(); rename = null; onChanged() } }
     delete?.let { pr -> WonderDialog(onDismissRequest = { delete = null }, title = { Text("Delete this recording?") }, text = { Text("\"${pr.name}\" and its original are removed from Echo. Files you saved elsewhere are not touched.") },
         confirmButton = { TextButton(onClick = { pr.dir.deleteRecursively(); delete = null; onChanged() }) { Text("Delete", color = p.danger) } }, dismissButton = { TextButton(onClick = { delete = null }) { Text("Keep") } }) }
+    var q by rememberSaveable { mutableStateOf("") }
+    val said = remember(list) { list.associate { it.id to Transcript.text(it).lowercase() } }
+    val shown = if (q.isBlank()) list else list.filter { it.name.contains(q, true) || said[it.id]?.contains(q.trim().lowercase()) == true }
+    Column(Modifier.fillMaxSize()) {
+    if (list.size > 1) Box(Modifier.padding(16.dp, 12.dp, 16.dp, 0.dp)) { Field(q, { q = it }, "Search names and what was said") }
     LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        items(list, key = { it.id }) { pr ->
+        items(shown, key = { it.id }) { pr ->
             Panel {
                 ListRow(pr.name, subtitle = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(Date(pr.created)) + " · " + (if (pr.ops.isEmpty()) "Untouched" else "${pr.ops.size} edit${if (pr.ops.size == 1) "" else "s"}") +
                     " · " + formatBytes(pr.original.length()), icon = WonderIcons.MusicNote, tint = Color(0xFF1E7FE8), onClick = { onOpen(pr) },
@@ -145,6 +150,7 @@ private fun ProjectList(list: List<Project>?, onOpen: (Project) -> Unit, onImpor
                         } } })
             }
         }
+    }
     }
 }
 

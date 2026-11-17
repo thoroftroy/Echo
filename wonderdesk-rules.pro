@@ -13,3 +13,9 @@
 -keep class com.hierynomus.** { *; }
 -keep class net.engio.** { *; }
 -keepattributes RuntimeVisibleAnnotations
+
+# Offline speech recognition (Vosk and JNA use reflection and native callbacks)
+-keep class com.sun.jna.** { *; }
+-keep class org.vosk.** { *; }
+-keepclassmembers class * extends com.sun.jna.** { public *; }
+-dontwarn java.awt.**

@@ -1,5 +1,11 @@
 # Echo changelog
 
+## v0.1.2
+
+- Speech to text with the time of every word, on the phone with no cloud. Pick words and delete them from the recording, or pick all the ums and uhs in one tap
+- The speech model (about 40 MB, English, Spanish, French, German, Portuguese or Italian) downloads once, with progress, when you first transcribe
+- Search your recordings by name or by what was said
+
 ## v0.1.1
 
 - Text size and accent colour chosen in Control Room now apply here

@@ -118,13 +118,14 @@ fun EditorScreen(project: Project, onClose: () -> Unit) {
                 Chip("Add audio at the end", false, { joinPick.launch(arrayOf("audio/*")) }, icon = WonderIcons.Add)
                 Chip("Spectrum", st.spectro, { st.spectro = !st.spectro; st.refresh() })
             }
-            Segmented(listOf("Studio", "Repair", "Tone", "Voice", "Save"), listOf("studio", "repair", "tone", "voice", "save").indexOf(panel).coerceAtLeast(0), Modifier.padding(10.dp)) { panel = listOf("studio", "repair", "tone", "voice", "save")[it] }
+            Segmented(listOf("Studio", "Repair", "Tone", "Voice", "Text", "Save"), listOf("studio", "repair", "tone", "voice", "text", "save").indexOf(panel).coerceAtLeast(0), Modifier.padding(10.dp)) { panel = listOf("studio", "repair", "tone", "voice", "text", "save")[it] }
             Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = 12.dp, vertical = 4.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 when (panel) {
                     "studio" -> StudioPanel(st, ::apply)
                     "repair" -> RepairPanel(st, ::apply)
                     "tone" -> TonePanel(st, ::apply)
                     "voice" -> VoicePanel(st, ::apply)
+                    "text" -> TextPanel(st, project, ::apply)
                     else -> SavePanel(st, project, toast.value) { exporting = it }
                 }
                 Spacer(Modifier.height(24.dp))

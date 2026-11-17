@@ -78,6 +78,17 @@ object Engine {
             "changer" -> change(c, CHANGERS.first { it.name == a.optString("name") })
             "join" -> { val other = AudioIo.readWav(File(a.getString("file")))!!.let { o -> if (o.rate != r) Clip(r, Array(o.ch.size) { Fx.resample(o.ch[it], o.rate.toDouble() / r) }) else o }
                 val gap = (d("gap", 0.0) * r).toInt(); Clip(r, Array(c.ch.size) { k -> c.ch[k] + FloatArray(gap) + other.ch[min(k, other.ch.size - 1)] }) }
+            "cut_many" -> {
+                val arr = a.getJSONArray("ranges")
+                val rs = (0 until arr.length()).map { arr.getJSONArray(it).let { r2 -> r2.getInt(0) to r2.getInt(1) } }.sortedBy { it.first }
+                val fade = (r * 0.004).toInt()
+                c.map { x -> val parts = ArrayList<FloatArray>(); var pos = 0
+                    for ((f, t) in rs) { val ff = f.coerceIn(pos, x.size); if (ff > pos) parts.add(x.copyOfRange(pos, ff)); pos = maxOf(pos, t.coerceIn(0, x.size)) }
+                    if (pos < x.size) parts.add(x.copyOfRange(pos, x.size))
+                    // a few milliseconds of fade at each join so the cut does not click
+                    parts.forEachIndexed { k, p -> for (i in 0 until minOf(fade, p.size / 2)) { val g = i / fade.toFloat(); if (k > 0) p[i] *= g; if (k < parts.size - 1) p[p.size - 1 - i] *= g } }
+                    val out = FloatArray(parts.sumOf { it.size }); var o = 0; parts.forEach { System.arraycopy(it, 0, out, o, it.size); o += it.size }; out }
+            }
             "mono" -> Clip(r, arrayOf(c.mono()))
             "stereo_swap" -> if (c.ch.size == 2) Clip(r, arrayOf(c.ch[1], c.ch[0])) else c
             else -> c
