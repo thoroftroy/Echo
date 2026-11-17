@@ -1,5 +1,10 @@
 # Echo changelog
 
+## v0.1.1
+
+- Text size and accent colour chosen in Control Room now apply here
+- New Rotate with the phone switch in Settings. Rotates by default
+
 ## v0.1.0
 
 - First release. Record voice, instruments and music with a level meter, clipping warning, microphone choice and a metronome that is never recorded
