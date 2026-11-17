@@ -185,6 +185,8 @@ class Recorder(private val file: File, private val rate: Int, private val channe
     @Volatile var peak = 0f; @Volatile var rms = 0f; @Volatile var clipped = 0; @Volatile var frames = 0L; @Volatile var paused = false; @Volatile var failed: String? = null
     @Volatile private var running = false
     private var thread: Thread? = null
+    /** Input gain as a multiplier; 1 leaves the sound alone. */
+    @Volatile var gain = 1f
 
     @Suppress("MissingPermission")
     fun start(onLevel: (Float, Float) -> Unit = { _, _ -> }) {
@@ -207,6 +209,7 @@ class Recorder(private val file: File, private val rate: Int, private val channe
                 rec.startRecording()
                 while (running) {
                     val n = rec.read(buf, 0, buf.size); if (n <= 0) { if (n < 0) { failed = "The microphone stopped"; break }; continue }
+                    if (gain != 1f) for (i in 0 until n) buf[i] = (buf[i] * gain).coerceIn(-32768f, 32767f).toInt().toShort()
                     var pk = 0; var sum = 0.0
                     for (i in 0 until n) { val v = abs(buf[i].toInt()); if (v > pk) pk = v; sum += v.toDouble() * v; if (v >= 32500) clipped++ }
                     peak = pk / 32768f; rms = sqrt(sum / n).toFloat() / 32768f; onLevel(peak, rms)

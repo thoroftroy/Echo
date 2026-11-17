@@ -188,6 +188,7 @@ private fun RecordPanel(onDone: (Project) -> Unit) {
         val device = devices.firstOrNull { it.id == deviceId }
         val source = if (raw && Build.VERSION.SDK_INT >= 24) MediaRecorder.AudioSource.UNPROCESSED else MediaRecorder.AudioSource.MIC
         val r = Recorder(pr.original, rate, channels, source, device)
+        r.gain = Math.pow(10.0, ctx.ep().getInt("gainDb", 0) / 20.0).toFloat()
         val vol = ctx.ep().getInt("metroVol", 80) / 100f
         fun go() {
             r.start { pk, rms -> peak = pk; level = rms }
@@ -249,6 +250,10 @@ private fun RecordPanel(onDone: (Project) -> Unit) {
             }
             Panel(title = "Microphone") {
                 Column(Modifier.padding(horizontal = 16.dp, vertical = 10.dp)) {
+                    var gdb by remember { mutableIntStateOf(ctx.ep().getInt("gainDb", 0)) }
+                    Text("Input boost: ${if (gdb > 0) "+" else ""}$gdb dB", style = MaterialTheme.typography.labelLarge)
+                    Slider(gdb.toFloat(), { gdb = it.toInt() }, valueRange = -12f..24f, onValueChangeFinished = { ctx.ep().edit().putInt("gainDb", gdb).apply() })
+                    Text("Makes a quiet microphone louder before it is recorded. Watch the meter so it does not clip.", style = MaterialTheme.typography.bodySmall, color = p.secondaryText, modifier = Modifier.padding(bottom = 8.dp))
                     Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         Chip("Automatic", deviceId == -1, { deviceId = -1 })
                         devices.forEach { d -> Chip((d.productName?.toString()?.takeIf { it.isNotBlank() } ?: "Input") + " (" + deviceKind(d.type) + ")", deviceId == d.id, { deviceId = d.id }) }

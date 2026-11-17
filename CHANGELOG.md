@@ -1,5 +1,9 @@
 # Echo changelog
 
+## v0.1.3
+
+- New setting: input boost for quiet microphones
+
 ## v0.1.2
 
 - Speech to text with the time of every word, on the phone with no cloud. Pick words and delete them from the recording, or pick all the ums and uhs in one tap
