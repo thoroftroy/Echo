@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import dev.wonderdesk.shared.*
 import kotlinx.coroutines.Dispatchers
@@ -90,8 +91,9 @@ fun EditorScreen(project: Project, onClose: () -> Unit) {
             WonderMenuItem("Back to the original recording", WonderIcons.Refresh) { st.stopPlayback(); project.restoreOriginal(); renderAll() })) {
         toast.value = LocalToast.current
         if (c == null) { Busy(st); return@WonderApp }
-        Column(Modifier.fillMaxSize()) {
-            Box(Modifier.fillMaxWidth().height(190.dp)) { WaveView(st) }
+        val land = LocalConfiguration.current.let { it.screenWidthDp > it.screenHeightDp }
+        @Composable fun ColumnScope.PartA() {
+            Box(Modifier.fillMaxWidth().height(if (land) 140.dp else 190.dp)) { WaveView(st) }
             // transport
             Row(Modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 6.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 FilledIconButton(onClick = { st.togglePlay() }, Modifier.size(52.dp)) { Icon(if (st.playing) WonderIcons.Pause else WonderIcons.PlayArrow, if (st.playing) "Pause" else "Play", Modifier.size(30.dp)) }
@@ -118,6 +120,8 @@ fun EditorScreen(project: Project, onClose: () -> Unit) {
                 Chip("Add audio at the end", false, { joinPick.launch(arrayOf("audio/*")) }, icon = WonderIcons.Add)
                 Chip("Spectrum", st.spectro, { st.spectro = !st.spectro; st.refresh() })
             }
+        }
+        @Composable fun ColumnScope.PartB() {
             Segmented(listOf("Studio", "Repair", "Tone", "Voice", "Text", "Save"), listOf("studio", "repair", "tone", "voice", "text", "save").indexOf(panel).coerceAtLeast(0), Modifier.padding(10.dp)) { panel = listOf("studio", "repair", "tone", "voice", "text", "save")[it] }
             Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = 12.dp, vertical = 4.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 when (panel) {
@@ -131,6 +135,11 @@ fun EditorScreen(project: Project, onClose: () -> Unit) {
                 Spacer(Modifier.height(24.dp))
             }
         }
+        // Sideways: the waveform and controls on the left, the editing panels on the right, so nothing is squeezed out.
+        if (land) Row(Modifier.fillMaxSize()) {
+            Column(Modifier.weight(1f).fillMaxHeight().verticalScroll(rememberScrollState())) { PartA() }
+            Column(Modifier.weight(1f).fillMaxHeight()) { PartB() }
+        } else Column(Modifier.fillMaxSize()) { PartA(); PartB() }
         if (st.busy != null) Busy(st)
         if (exporting) { /* progress shown through st.busy */ }
     }

@@ -1,5 +1,9 @@
 # Echo changelog
 
+## v0.1.4
+
+- The editor now has a two-column landscape layout: waveform and controls on one side, editing panels on the other
+
 ## v0.1.3
 
 - New setting: input boost for quiet microphones
