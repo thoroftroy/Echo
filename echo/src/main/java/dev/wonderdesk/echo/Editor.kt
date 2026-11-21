@@ -319,6 +319,6 @@ private fun SavePanel(st: EditorState, project: Project, toast: (String) -> Unit
             WButton("Save", { export(false) }, Modifier.weight(1f), icon = WonderIcons.Save, kind = ButtonKind.Primary)
             WButton("Share", { export(true) }, Modifier.weight(1f), icon = WonderIcons.Share)
         }
-        Text("Saved into Music › Echo, where Cinema, Memories and every music app can find it.", style = MaterialTheme.typography.bodySmall, color = p.secondaryText)
+        Text("Saved into Music › Echo, where Memories and every music app can find it.", style = MaterialTheme.typography.bodySmall, color = p.secondaryText)
     } }
 }

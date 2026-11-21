@@ -1,5 +1,9 @@
 # Echo changelog
 
+## v0.1.9
+
+- Updated the note about where saved audio can be found
+
 ## v0.1.8
 
 - At night the animated background gets a stronger wash, so text stays easy to read on dark scenes
