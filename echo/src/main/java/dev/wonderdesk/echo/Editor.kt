@@ -195,7 +195,7 @@ private fun StudioPanel(st: EditorState, apply: (Op) -> Unit) {
             Slide("Room echo", v.dereverb, { v = v.copy(dereverb = it) }); Slide("Hum and rumble", v.dehum, { v = v.copy(dehum = it) })
             Slide("Evening out (compression)", v.compress, { v = v.copy(compress = it) }); Slide("Warmth", v.warmth, { v = v.copy(warmth = it) }); Slide("Presence", v.presence, { v = v.copy(presence = it) })
             Slide("Loudness target", v.lufs, { v = v.copy(lufs = it) }, -26.0..-10.0) { "%.0f LUFS".format(it) }
-            SwitchRow("Shorten long pauses", v.silence, { v = v.copy(silence = it) })
+            SwitchRow("Shorten long pauses", v.silence, { v = v.copy(silence = it) }, help = "Trims silences in a recording so it flows faster.")
             WButton("Apply these settings", { apply(op("voice", "Studio Voice") { val j = v.toJson(); j.keys().forEach { k -> put(k, j.get(k)) } }) }, Modifier.fillMaxWidth().padding(top = 8.dp), kind = ButtonKind.Primary)
         }
     }

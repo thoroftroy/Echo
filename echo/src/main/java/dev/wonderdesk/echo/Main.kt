@@ -295,7 +295,7 @@ private fun EchoSettings() {
         SwitchRow("Open the editor when you stop", autoOpen, { autoOpen = it }, icon = WonderIcons.Edit, tint = Color(0xFF1E7FE8)); PanelDivider()
         SwitchRow("Keep the screen on while recording", awake, { awake = it }, icon = WonderIcons.Visibility, tint = Color(0xFF8E44AD)); PanelDivider()
         SwitchRow("Count in one bar before recording", countIn, { countIn = it }, subtitle = "Needs the metronome turned on in the Record tab", icon = WonderIcons.Timer, tint = Color(0xFFE39A12)); PanelDivider()
-        SwitchRow("Warn when the sound is too loud", clip, { clip = it }, icon = WonderIcons.VolumeUp, tint = Color(0xFFE5483C)); PanelDivider()
+        SwitchRow("Warn when the sound is too loud", clip, { clip = it }, icon = WonderIcons.VolumeUp, tint = Color(0xFFE5483C), help = "Shows a warning when the recording clips and sounds distorted."); PanelDivider()
         Column(Modifier.padding(16.dp, 10.dp)) { Text("Metronome volume: $vol%", style = MaterialTheme.typography.labelLarge); Slider(vol.toFloat(), { vol = it.toInt() }, valueRange = 10f..100f) }
         PanelDivider()
         Column(Modifier.padding(16.dp, 10.dp)) { Text("Start with", style = MaterialTheme.typography.labelLarge)
