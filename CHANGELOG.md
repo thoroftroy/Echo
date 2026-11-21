@@ -1,5 +1,9 @@
 # Echo changelog
 
+## v0.1.5
+
+- Fixed a gap above the keyboard in screens with a bottom tab bar: the tab bar now steps aside while you type, so you can see what you are writing
+
 ## v0.1.4
 
 - The editor now has a two-column landscape layout: waveform and controls on one side, editing panels on the other
