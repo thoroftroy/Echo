@@ -1,5 +1,9 @@
 # Echo changelog
 
+## v0.2.0
+
+- While you record, the background goes red and moves with your voice: the louder you are, the livelier it gets. Paused it holds its breath, and the count-in ticks amber
+
 ## v0.1.11
 
 - The symbols drifting in the background are smaller and fainter so they no longer crowd text; selected segments and chips are readable in every look (including Super); the warning banner at the top has a solid backing so its text is easy to read

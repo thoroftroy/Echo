@@ -179,6 +179,14 @@ private fun RecordPanel(onDone: (Project) -> Unit) {
     var beat by remember { mutableIntStateOf(-1) }
     val metronome = remember { Metronome() }
     val running = rec != null
+    // Recording: the scene goes red and moves with your voice (louder is livelier). Paused it holds its breath; counting in, it ticks amber.
+    val loud = ((level.coerceIn(0f, 1f) * 5).toInt()) / 5f
+    SceneMoodEffect(when {
+        countingIn -> SceneMood(hue = 38f, tint = android.graphics.Color.argb(60, 245, 175, 60), energy = 1.3f, pulse = .4f, glyphs = listOf("1", "2", "3", "4"))
+        running && paused -> SceneMood(energy = .2f, hush = .35f, glyphs = listOf("⏸", "•"))
+        running -> SceneMood(hue = 352f, tint = android.graphics.Color.argb(70, 230, 60, 70), energy = 1f + 2.2f * loud, pulse = .35f + .5f * loud, glyphs = listOf("♪", "●", "∿", "♫"))
+        else -> SceneMood()
+    })
     DisposableEffect(running) { view.keepScreenOn = running && ctx.ep().getBoolean("keepAwake", true); onDispose { view.keepScreenOn = false } }
     DisposableEffect(Unit) { onDispose { metronome.stop(); rec?.stop() } }
     LaunchedEffect(running) { while (running) { seconds = (rec?.frames ?: 0L).toDouble() / rate; delay(100) } }
