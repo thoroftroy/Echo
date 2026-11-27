@@ -48,11 +48,15 @@ class Player {
                 while (playing) {
                     if (pos >= end) { if (loop) pos = from.coerceIn(0, end - 1) else break }
                     val n = min(chunk, end - pos)
-                    for (i in 0 until n) for (k in 0 until ch) buf[i * ch + k] = clip.ch[k][pos + i]
+                    var sum = 0.0
+                    for (i in 0 until n) for (k in 0 until ch) { val v = clip.ch[k][pos + i]; buf[i * ch + k] = v; sum += v * v }
+                    // The scene's waveform follows what is playing.
+                    dev.wonderdesk.shared.SceneFeed.waveOn = true
+                    dev.wonderdesk.shared.SceneFeed.push((kotlin.math.sqrt(sum / (n * ch).coerceAtLeast(1)) * 3.2).toFloat())
                     track.write(buf, 0, n * ch, AudioTrack.WRITE_BLOCKING); pos += n
                 }
                 if (playing) { /* natural end: let the buffer drain */ Thread.sleep(150) }
-            } finally { runCatching { track.stop() }; track.release(); val was = playing; playing = false; if (was) onEnd() }
+            } finally { runCatching { track.stop() }; track.release(); val was = playing; playing = false; dev.wonderdesk.shared.SceneFeed.waveOn = false; dev.wonderdesk.shared.SceneFeed.amp = 0f; if (was) onEnd() }
         }.also { it.start() }
     }
     fun stop() { playing = false; thread?.join(500); thread = null }

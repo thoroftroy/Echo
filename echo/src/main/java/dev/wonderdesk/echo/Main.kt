@@ -188,7 +188,9 @@ private fun RecordPanel(onDone: (Project) -> Unit) {
         else -> SceneMood()
     })
     DisposableEffect(running) { view.keepScreenOn = running && ctx.ep().getBoolean("keepAwake", true); onDispose { view.keepScreenOn = false } }
-    DisposableEffect(Unit) { onDispose { metronome.stop(); rec?.stop() } }
+    DisposableEffect(Unit) { onDispose { metronome.stop(); rec?.stop(); SceneFeed.clear() } }
+    // Not recording (or paused): the waveform leaves the scene.
+    LaunchedEffect(running, paused) { if (!running || paused) { SceneFeed.waveOn = false; SceneFeed.amp = 0f } }
     LaunchedEffect(running) { while (running) { seconds = (rec?.frames ?: 0L).toDouble() / rate; delay(100) } }
 
     fun begin() {
@@ -199,7 +201,7 @@ private fun RecordPanel(onDone: (Project) -> Unit) {
         r.gain = Math.pow(10.0, ctx.ep().getInt("gainDb", 0) / 20.0).toFloat()
         val vol = ctx.ep().getInt("metroVol", 80) / 100f
         fun go() {
-            r.start { pk, rms -> peak = pk; level = rms }
+            r.start { pk, rms -> peak = pk; level = rms; dev.wonderdesk.shared.SceneFeed.waveOn = true; dev.wonderdesk.shared.SceneFeed.push((rms * 3.2f).coerceIn(0f, 1f)) }
             if (r.failed != null) { pr.dir.deleteRecursively(); metronome.stop(); countingIn = false; return }
             project = pr; rec = r; paused = false; seconds = 0.0; countingIn = false
             if (metro && !metronome.isRunning) metronome.start(bpm, beats, vol) { b -> beat = b }
