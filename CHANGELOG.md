@@ -1,5 +1,9 @@
 # Echo changelog
 
+## v0.3.1
+
+- The moving background holds still while Battery Saver is on, so it uses next to no power then. It still changes with what the app is doing
+
 ## v0.3.0
 
 - While you record or play, the background shows the live waveform of the sound flowing across the screen, the level bars jump with it and loud moments send rings out
