@@ -55,7 +55,7 @@ internal fun TextPanel(st: EditorState, project: Project, apply: (Op) -> Unit) {
     Panel(title = "Speech to text") {
         Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Text("Write out what was said, with the time of every word. Tap words to pick them, then delete them from the recording. It all runs on this phone.", style = MaterialTheme.typography.bodySmall, color = p.secondaryText)
-            Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            Row(Modifier.scrollRow(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 Speech.LANGS.forEachIndexed { i, (n, _) -> Chip(n, lang == i, { lang = i; ctx.ep().edit().putInt("speechLang", i).apply() }) }
             }
             val has = Speech.has(ctx, Speech.LANGS[lang].second)
@@ -85,7 +85,7 @@ internal fun TextPanel(st: EditorState, project: Project, apply: (Op) -> Unit) {
                 }
             }
             if (t.words.isNotEmpty()) {
-                Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Row(Modifier.scrollRow(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     WButton("Delete ${picked.size} picked", {
                         val ranges = JSONArray(); picked.sorted().forEach { i -> val w = t.words[i]; ranges.put(JSONArray().put((w.start * rate).toInt()).put((w.end * rate).toInt())) }
                         apply(Op("cut_many", JSONObject().put("ranges", ranges), "Deleting words")); picked = emptySet()

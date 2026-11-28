@@ -30,7 +30,7 @@
     "checkup": "0.2.0",
     "fetch": "0.2.0",
     "launcher": "0.11.1",
-    "echo": "0.3.2"
+    "echo": "0.3.3"
   },
   "tools": {
     "installer": "0.2.2",

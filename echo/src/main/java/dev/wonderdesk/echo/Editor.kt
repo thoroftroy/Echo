@@ -106,7 +106,7 @@ fun EditorScreen(project: Project, onClose: () -> Unit) {
                 IconButton(onClick = { st.zoom(1.6, st.viewW / 2f) }) { Icon(WonderIcons.ZoomIn, "Zoom in") }
                 IconButton(onClick = { st.zoom(1 / 1.6, st.viewW / 2f) }) { Icon(WonderIcons.ZoomOut, "Zoom out") }
             }
-            Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 10.dp), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            Row(Modifier.fillMaxWidth().scrollRow().padding(horizontal = 10.dp), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 Chip("Select all", false, { st.selA = 0; st.selB = c.frames })
                 Chip("Trim to selection", false, { if (st.hasSel) apply(op("crop", "Trimming") { put("from", st.selA); put("to", st.selB) }) else toast.value("Select a part first") }, icon = WonderIcons.Crop)
                 Chip("Delete selection", false, { if (st.hasSel) apply(op("cut", "Deleting") { put("from", st.selA); put("to", st.selB) }) else toast.value("Select a part first") }, icon = WonderIcons.ContentCut)
@@ -177,7 +177,7 @@ private fun StudioPanel(st: EditorState, apply: (Op) -> Unit) {
     Panel(title = "Studio Voice") {
         Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Text("One tap for clean, natural, professional-sounding speech: it removes noise, hum, clicks and pops, tames harsh S sounds and breaths, evens out the level and sets the loudness.", style = MaterialTheme.typography.bodySmall, color = p.secondaryText)
-            Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) { Voice.presets.forEach { (n, _) -> Chip(n, preset == n, { preset = n }) } }
+            Row(Modifier.scrollRow(), horizontalArrangement = Arrangement.spacedBy(6.dp)) { Voice.presets.forEach { (n, _) -> Chip(n, preset == n, { preset = n }) } }
             Slide("Intensity", intensity, { intensity = it }, 0.0..1.4) { if (it < .34) "Gentle" else if (it < .8) "Balanced" else if (it < 1.1) "Full" else "Strong" }
             WButton("Studio Voice", { apply(op("voice", "Studio Voice") { val j = base.toJson(); j.keys().forEach { k -> put(k, j.get(k)) } }) }, Modifier.fillMaxWidth(), icon = WonderIcons.Mic, kind = ButtonKind.Primary)
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -312,7 +312,7 @@ private fun SavePanel(st: EditorState, project: Project, toast: (String) -> Unit
     }
     Panel(title = "Export") { Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Field(name, { name = it }, "File name")
-        Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) { formats.forEach { (k, n) -> Chip(n, fmt == k, { fmt = k }) } }
+        Row(Modifier.scrollRow(), horizontalArrangement = Arrangement.spacedBy(6.dp)) { formats.forEach { (k, n) -> Chip(n, fmt == k, { fmt = k }) } }
         if (fmt == "m4a" || fmt == "ogg") Slide("Quality", kbps.toDouble(), { kbps = it.roundToInt() }, 64.0..320.0) { "${it.roundToInt()} kbps" }
         Text(when { fmt.startsWith("wav") -> "Uncompressed. Best for editing in other programs."; fmt == "flac" -> "Lossless and about half the size of WAV."; fmt == "m4a" -> "Small and plays everywhere."; else -> "Small and very clean sounding at low bitrates." }, style = MaterialTheme.typography.bodySmall, color = p.secondaryText)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {

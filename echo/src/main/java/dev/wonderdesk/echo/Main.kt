@@ -249,11 +249,11 @@ private fun RecordPanel(onDone: (Project) -> Unit) {
         if (!running) {
             Panel(title = "Quality", footer = "Higher rates keep more detail. Raw skips the phone's own voice processing, best for music, instruments and for Studio Voice cleanup.") {
                 Text("Sample rate", Modifier.padding(start = 16.dp, top = 10.dp), style = MaterialTheme.typography.labelLarge)
-                Row(Modifier.padding(horizontal = 16.dp, vertical = 8.dp).horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Row(Modifier.padding(horizontal = 16.dp, vertical = 8.dp).scrollRow(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     listOf(44100 to "44.1 kHz", 48000 to "48 kHz").forEach { (v, l) -> Chip(l, rate == v, { rate = v }) }
                 }
                 PanelDivider()
-                Row(Modifier.padding(horizontal = 16.dp, vertical = 10.dp).horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Row(Modifier.padding(horizontal = 16.dp, vertical = 10.dp).scrollRow(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Chip("Mono", channels == 1, { channels = 1 }); Chip("Stereo", channels == 2, { channels = 2 })
                     Chip("Phone processing", !raw, { raw = false }); Chip("Raw sound", raw, { raw = true })
                 }
@@ -264,7 +264,7 @@ private fun RecordPanel(onDone: (Project) -> Unit) {
                     Text("Input boost: ${if (gdb > 0) "+" else ""}$gdb dB", style = MaterialTheme.typography.labelLarge)
                     Slider(gdb.toFloat(), { gdb = it.toInt() }, valueRange = -12f..24f, onValueChangeFinished = { ctx.ep().edit().putInt("gainDb", gdb).apply() })
                     Text("Makes a quiet microphone louder before it is recorded. Watch the meter so it does not clip.", style = MaterialTheme.typography.bodySmall, color = p.secondaryText, modifier = Modifier.padding(bottom = 8.dp))
-                    Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Row(Modifier.scrollRow(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         Chip("Automatic", deviceId == -1, { deviceId = -1 })
                         devices.forEach { d -> Chip((d.productName?.toString()?.takeIf { it.isNotBlank() } ?: "Input") + " (" + deviceKind(d.type) + ")", deviceId == d.id, { deviceId = d.id }) }
                     }
@@ -309,18 +309,18 @@ private fun EchoSettings() {
         Column(Modifier.padding(16.dp, 10.dp)) { Text("Metronome volume: $vol%", style = MaterialTheme.typography.labelLarge); Slider(vol.toFloat(), { vol = it.toInt() }, valueRange = 10f..100f) }
         PanelDivider()
         Column(Modifier.padding(16.dp, 10.dp)) { Text("Start with", style = MaterialTheme.typography.labelLarge)
-            Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) { Chip("44.1 kHz", rate == 44100, { rate = 44100 }); Chip("48 kHz", rate == 48000, { rate = 48000 }); Chip("Mono", channels == 1, { channels = 1 }); Chip("Stereo", channels == 2, { channels = 2 }); Chip("Raw sound", raw, { raw = !raw }) } }
+            Row(Modifier.scrollRow(), horizontalArrangement = Arrangement.spacedBy(8.dp)) { Chip("44.1 kHz", rate == 44100, { rate = 44100 }); Chip("48 kHz", rate == 48000, { rate = 48000 }); Chip("Mono", channels == 1, { channels = 1 }); Chip("Stereo", channels == 2, { channels = 2 }); Chip("Raw sound", raw, { raw = !raw }) } }
     }
     Panel(title = "Editing") {
         Column(Modifier.padding(16.dp, 10.dp)) { Text("Waveform colour", style = MaterialTheme.typography.labelLarge)
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { listOf("Theme", "Green", "Orange", "Pink", "White").forEachIndexed { i, n -> Chip(n, wave == i, { wave = i }) } } }
         PanelDivider()
         Column(Modifier.padding(16.dp, 10.dp)) { Text("Studio Voice starts on", style = MaterialTheme.typography.labelLarge)
-            Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) { Voice.presets.forEachIndexed { i, (n, _) -> Chip(n, preset == i, { preset = i }) } }
+            Row(Modifier.scrollRow(), horizontalArrangement = Arrangement.spacedBy(8.dp)) { Voice.presets.forEachIndexed { i, (n, _) -> Chip(n, preset == i, { preset = i }) } }
             Text("Intensity: $intensity%", Modifier.padding(top = 6.dp), style = MaterialTheme.typography.labelLarge); Slider(intensity.toFloat(), { intensity = it.toInt() }, valueRange = 0f..140f) }
         PanelDivider()
         Column(Modifier.padding(16.dp, 10.dp)) { Text("Save as", style = MaterialTheme.typography.labelLarge)
-            Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) { listOf("WAV 16", "WAV 24", "WAV 32 float", "FLAC", "M4A", "OGG").forEachIndexed { i, n -> Chip(n, fmt == i, { fmt = i }) } } }
+            Row(Modifier.scrollRow(), horizontalArrangement = Arrangement.spacedBy(8.dp)) { listOf("WAV 16", "WAV 24", "WAV 32 float", "FLAC", "M4A", "OGG").forEachIndexed { i, n -> Chip(n, fmt == i, { fmt = i }) } } }
         PanelDivider()
         SwitchRow("Loop the selection while playing", loopSel, { loopSel = it }, icon = WonderIcons.Repeat, tint = Color(0xFF2E9E44), help = "When part of a recording is selected, playback goes round that part again and again, handy for checking an edit."); PanelDivider()
         SwitchRow("Play straight after an edit", autoPlay, { autoPlay = it }, icon = WonderIcons.PlayArrow, tint = Color(0xFF1E7FE8))
