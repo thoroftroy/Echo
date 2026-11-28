@@ -272,7 +272,7 @@ private fun RecordPanel(onDone: (Project) -> Unit) {
                 }
             }
             Panel(title = "Metronome", footer = "The click plays through your speaker or headphones and is never part of the recording.") {
-                SwitchRow("Play a metronome while recording", metro, { metro = it }, icon = WonderIcons.Timer, tint = Color(0xFFE39A12))
+                SwitchRow("Play a metronome while recording", metro, { metro = it }, icon = WonderIcons.Timer, tint = Color(0xFFE39A12), help = "A steady click in your headphones so you keep time while playing or singing. It is not recorded.")
                 if (metro) {
                     Column(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
                         Row { Text("Tempo", Modifier.weight(1f), style = MaterialTheme.typography.labelLarge); Text("$bpm BPM", color = p.accent, style = MaterialTheme.typography.labelMedium) }
@@ -304,7 +304,7 @@ private fun EchoSettings() {
     Panel(title = "Recording") {
         SwitchRow("Open the editor when you stop", autoOpen, { autoOpen = it }, icon = WonderIcons.Edit, tint = Color(0xFF1E7FE8)); PanelDivider()
         SwitchRow("Keep the screen on while recording", awake, { awake = it }, icon = WonderIcons.Visibility, tint = Color(0xFF8E44AD)); PanelDivider()
-        SwitchRow("Count in one bar before recording", countIn, { countIn = it }, subtitle = "Needs the metronome turned on in the Record tab", icon = WonderIcons.Timer, tint = Color(0xFFE39A12)); PanelDivider()
+        SwitchRow("Count in one bar before recording", countIn, { countIn = it }, subtitle = "Needs the metronome turned on in the Record tab", icon = WonderIcons.Timer, tint = Color(0xFFE39A12), help = "You hear one bar of clicks first, so you know exactly when to start."); PanelDivider()
         SwitchRow("Warn when the sound is too loud", clip, { clip = it }, icon = WonderIcons.VolumeUp, tint = Color(0xFFE5483C), help = "Shows a warning when the recording clips and sounds distorted."); PanelDivider()
         Column(Modifier.padding(16.dp, 10.dp)) { Text("Metronome volume: $vol%", style = MaterialTheme.typography.labelLarge); Slider(vol.toFloat(), { vol = it.toInt() }, valueRange = 10f..100f) }
         PanelDivider()
@@ -322,7 +322,7 @@ private fun EchoSettings() {
         Column(Modifier.padding(16.dp, 10.dp)) { Text("Save as", style = MaterialTheme.typography.labelLarge)
             Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) { listOf("WAV 16", "WAV 24", "WAV 32 float", "FLAC", "M4A", "OGG").forEachIndexed { i, n -> Chip(n, fmt == i, { fmt = i }) } } }
         PanelDivider()
-        SwitchRow("Loop the selection while playing", loopSel, { loopSel = it }, icon = WonderIcons.Repeat, tint = Color(0xFF2E9E44)); PanelDivider()
+        SwitchRow("Loop the selection while playing", loopSel, { loopSel = it }, icon = WonderIcons.Repeat, tint = Color(0xFF2E9E44), help = "When part of a recording is selected, playback goes round that part again and again, handy for checking an edit."); PanelDivider()
         SwitchRow("Play straight after an edit", autoPlay, { autoPlay = it }, icon = WonderIcons.PlayArrow, tint = Color(0xFF1E7FE8))
     }
 }
